@@ -1,0 +1,50 @@
+# Data files
+data/
+*.csv
+*.xlsx
+*.xls
+*.json
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build/cache
+dist/
+build/
+*.egg-info/
+
+# Docker/Postgres local files
+postgres_data/
+pgdata/
