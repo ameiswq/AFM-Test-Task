@@ -6,7 +6,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - ./data/transactions_clean.csv:/docker-entrypoint-initdb.d/transactions_clean.csv
 
   api:
     build: .
@@ -19,4 +22,4 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
     ports:
-      - "8000:8000"
+      - "8001:8000"
