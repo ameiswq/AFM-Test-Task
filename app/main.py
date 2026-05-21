@@ -54,6 +54,9 @@ def search_transactions(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100)):
    
+    if not q.strip():
+        raise HTTPException(status_code=400, detail="Search query cannot be empty")
+
     if date_from and date_to and date_from > date_to:
         raise HTTPException(status_code=400, detail="date_from не может быть позже date_to")
 
@@ -64,6 +67,7 @@ def search_transactions(
         for word in q.strip().split():
             conditions.append("description ILIKE %s")
             params.append(f"%{word}%")
+    
 
     if date_from:
         conditions.append("date >= %s")

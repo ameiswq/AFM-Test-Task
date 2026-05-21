@@ -62,7 +62,7 @@ def test_search():
 
 def test_search_empty_query():
     response = client.get("/search", params={"q": ""})
-    assert response.status_code == 200
+    assert response.status_code == 400
 
 
 def test_search_with_filters():
