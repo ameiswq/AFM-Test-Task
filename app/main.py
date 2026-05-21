@@ -138,8 +138,11 @@ def get_anomalies(counterparty_id: str):
             )
             spikes = [dict(row) for row in cur.fetchall()]
 
+    has_anomalies = concentrated or len(spikes) > 0
+
     return {
         "counterparty_id": counterparty_id,
+        "has_anomalies": has_anomalies,
         "incoming_concentration": {
             "concentrated": concentrated,
             "threshold_percentage": 70,
