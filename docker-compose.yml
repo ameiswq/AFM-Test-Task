@@ -9,7 +9,7 @@ services:
       - "5433:5432"
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
-      - ./data/transactions_clean.csv:/docker-entrypoint-initdb.d/transactions_clean.csv
+      - ./data:/data:ro
 
   api:
     build: .
