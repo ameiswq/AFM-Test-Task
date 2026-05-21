@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException, Query
 from typing import Optional
-from app.db import db
+from app.db import DBc
 
 app = FastAPI(title="Transactions API")
 
 @app.get("/counterparty/{counterparty_id}")
 def get_counterparty(counterparty_id: str):
-    with db() as db:
+    with DBc() as db:
         with db.cursor() as cur:
             cur.execute("""select 1 from transactions where sender_id = %s or receiver_id = %s limit 1""", (counterparty_id, counterparty_id))
             if cur.fetchone() is None:
@@ -83,7 +83,7 @@ def search_transactions(
 
     where_clause = ("where " + " and ".join(conditions)) if conditions else ""
 
-    with db() as db:
+    with DBc() as db:
         with db.cursor() as cur:
             cur.execute(f"select count(*) as total from transactions {where_clause}", params)
             total = cur.fetchone()["total"]
@@ -107,8 +107,8 @@ def search_transactions(
 
 @app.get("/counterparty/{counterparty_id}/anomalies")
 def get_anomalies(counterparty_id: str):
-    with db() as conn:
-        with conn.cursor() as cur:
+    with DBc() as db:
+        with db.cursor() as cur:
             cur.execute("""select 1 from transactions where sender_id = %s or receiver_id = %s limit 1""", (counterparty_id, counterparty_id))
             if cur.fetchone() is None:
                 raise HTTPException(status_code=404, detail="Counterparty not found")
@@ -122,11 +122,11 @@ def get_anomalies(counterparty_id: str):
                     (counterparty_id,))
             incoming_concentration = [dict(row) for row in cur.fetchall()]
 
-            concentrated = any(row["percetnage"] and row["percetnage"] > 70 for row in incoming_concentration)
+            concentrated = any(row["percentage"] and row["percentage"] > 70 for row in incoming_concentration)
 
             #всплески оборота через среднее арифметическое и среднеквадратичное отклонение
             cur.execute(
-                """with montly as (select to_char(date, 'YYYY-MM') as month,
+                """with monthly as (select to_char(date, 'YYYY-MM') as month,
                     sum(amount_kzt) as turnover from transactions where sender_id = %s or receiver_id = %s
                     group by to_char(date, 'YYYY-MM')
                 ),
